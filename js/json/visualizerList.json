@@ -1,0 +1,15 @@
+{
+    "VisualizerList": 
+        [{"file":"js/visFlowerGirl.js","className":"VisualizerFlowerGirl"},
+         {"file":"js/visAsteroids.js","className":"VisAzBlaster"},
+         {"file":"js/visPong.js","className":"VisPong"},
+         {"file":"js/visTemplate.js?ver=1","className":"Visualizer"},
+         {"file":"js/visRollingHills.js?ver=1","className":"VisualizerRollingHills"},
+         {"file":"js/visMirror.js?ver=1","className":"VisualizerMirror"},
+         {"file":"js/visExpando.js?ver=1","className":"VisualizerExpando"},
+         {"file":"js/visShaderTest.js?ver=12","className":"VisualizerShaderTest"},
+         {"file":"js/visXmas.js?ver=12","className":"VisualizerXmas"},
+         {"file":"js/visPlatformer.js?ver=12","className":"VisualizerPlatformer"},
+         {"file":"js/visJump.js?ver=12","className":"VisualizerJump"},
+         {"file":"js/visVerticalShooter.js","className":"VisualizerVShooter"}]
+}

@@ -1,0 +1,6 @@
+{
+    "VisualizerList": 
+        [{"file":"js/visTemplate.js","className":"Visualizer"},
+         {"file":"js/visRollingHills.js","className":"VisualizerRollingHills"},
+         {"file":"js/visMirror.js","className":"VisualizerMirror"}]
+}
