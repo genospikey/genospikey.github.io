@@ -6,6 +6,7 @@
 import * as PIXI from 'pixi.js'
 import AudioAnalyser from '../js/AudioAnalyser'
 import Vizualiser from '../js/Vizualiser'
+import VizualiserList from '../js/VizualiserList.js'
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 
 const canvas = ref()
@@ -13,20 +14,52 @@ const app = ref()
 const e = ref(window.addEventListener("resize", onResize))
 const vizualiser = ref()
 const appticker = ref()
+const vizList = ref(new VizualiserList())
+const currViz = ref(0)
 
 function onResize(e) {
-    var w = window.innerWidth;
-    var h = window.innerHeight;
+    var w = window.innerWidth
+    var h = window.innerHeight
 
     //this part resizes the canvas but keeps ratio the same
-    app.value.renderer.view.style.width = w + "px";
-    app.value.renderer.view.style.height = h + "px";
+    app.value.renderer.view.style.width = w + "px"
+    app.value.renderer.view.style.height = h + "px"
 
     //this part adjusts the ratio:
-    app.value.renderer.resize(w,h);
+    app.value.renderer.resize(w,h)
+    vizualiser.value.resize()
 }
 
+function startViz(vizualiserClass){
+    //clear out existing tickers and destroy current viz
+    app.value.ticker.remove((delta)=>{tick(delta)})
+    if(vizualiser.value) vizualiser.value.destroy()
+
+    //setup new viz
+    vizualiser.value = new vizualiserClass(app.value, props.audioAnalyser)
+    app.value.stage = vizualiser.value.stage
+
+    app.value.ticker.add((delta)=>{tick(delta)})
+}
+
+function tick(delta){
+    props.audioAnalyser.update()
+    vizualiser.value.update()   
+}
+
+function nextViz(vizName){
+    console.log(vizList.value.list.length)
+    currViz.value = (currViz.value + 1) % vizList.value.list.length
+    startViz(vizList.value.list[currViz.value].class)
+
+}
+
+onBeforeUnmount(() => {
+    window.removeEventListener("resize",e.value)
+})
+
 onMounted(() => {
+    console.log(vizList.value.list)
     app.value = new PIXI.Application({
         autoResize: true,
         resizeTo: canvas.value,
@@ -38,19 +71,17 @@ onMounted(() => {
     
     canvas.value.appendChild(app.value.view)
 
-    vizualiser.value = new Vizualiser(app,props.audioAnalyser)
-    app.value.stage = vizualiser.value.stage
-    appticker.value = app.value.ticker.add((delta)=>vizualiser.value.update())
-    
-})
-
-onBeforeUnmount(() => {
-    window.removeEventListener("resize",e.value)
+    startViz(vizList.value.list[currViz.value].class)
 })
 
 const props = defineProps({
     audioAnalyser : AudioAnalyser
 })
+
+defineExpose({
+    nextViz
+})
+
 </script>
 
 
