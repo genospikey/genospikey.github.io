@@ -39,18 +39,24 @@ export default class AudioAnalyser extends EventEmitter {
         this.freqArray = new Float32Array(this.analyser.fftSize)
         this.freqArrayMax = new Float32Array(this.analyser.fftSize)
 
-        this.diffFactor = 1.05
+        this.diffFactor = 0.9
         this.decayFactor = 0.01
+        this.minDecayFactor = 0.005
 
         this.dataArray = new Float32Array(this.analyser.frequencyBinCount)
         this.dataArrayMax = new Float32Array(this.analyser.frequencyBinCount)
+        this.dataArrayMin = new Float32Array(this.analyser.frequencyBinCount)
 
         //test ouput
         this.analyser.getFloatTimeDomainData(this.freqArray)
         this.analyser.getFloatFrequencyData(this.dataArray)
+
+        this.analyser.getFloatTimeDomainData(this.freqArrayMax)
+        this.analyser.getFloatFrequencyData(this.dataArrayMax)
+        this.analyser.getFloatFrequencyData(this.dataArrayMin)
     }
 
-    update(){
+    update(delta){
         if(this.audioCtx){
             this.analyser.getFloatTimeDomainData(this.freqArray)
             this.analyser.getFloatFrequencyData(this.dataArray)
@@ -61,17 +67,30 @@ export default class AudioAnalyser extends EventEmitter {
                     this.freqArrayMax[i] = this.freqArray[i]
                 }
                 else
-                    this.freqArrayMax[i] -= this.decayFactor
+                    this.freqArrayMax[i] -= this.decayFactor * delta
             }
-    
+            
             for(let i = 0; i < this.analyser.frequencyBinCount; i++){
-                if(this.dataArrayMax * this.diffFactor < this.dataArray[i]){
+                if(this.dataArrayMax[i] < this.dataArray[i]){
                     this.dataArrayMax[i] = this.dataArray[i]
+                    
                     this.emit("beat"+i)
                 }
                 else
-                    this.dataArrayMax[i] -= this.decayFactor
+                    this.dataArrayMax[i] -= this.decayFactor * delta
             }
+
+            for(let i = 0; i < this.analyser.frequencyBinCount; i++){
+                if(this.dataArrayMin[i] > this.dataArray[i] 
+                    || this.dataArrayMin[i] === Number.NEGATIVE_INFINITY)
+                    this.dataArrayMin[i] = this.dataArray[i]
+                else{
+                    this.dataArrayMin[i] += this.minDecayFactor * delta
+                    if(this.dataArrayMin[i] < this.dataArrayMax[i]-70)
+                        this.dataArrayMin[i] = this.dataArrayMax[i]-70 
+                }
+            }
+ 
         }
         this.inc++
     }

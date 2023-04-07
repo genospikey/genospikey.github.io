@@ -6,6 +6,7 @@ export default class Vizualiser{
     
     constructor(app, audioAnalyser){
         this.stage = new PIXILayers.Stage()
+        
         this.app = app
         this.audioAnalyser = audioAnalyser
 

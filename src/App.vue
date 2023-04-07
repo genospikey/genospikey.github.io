@@ -53,7 +53,5 @@ function clicked(button){
     <Button :class="buttonStyle" button-image="resume" @click="clicked('resume')"/>
     <Button :class="buttonStyle" button-image="nextViz" @click="clicked('nextViz')"/>
   </div>
-  <div class="absolute left-12 top-32 z-10 text-white font-display">{{audioText}} {{ debug_count }}</div>
-  <div v-if="audioAnalyser.dataArray" class="absolute left-12 top-36 z-10 w-full text-white font-display break-words text-xs">{{audioAnalyser}}</div>
   <Canvas :audioAnalyser="audioAnalyser" ref="canvas" />
 </template>

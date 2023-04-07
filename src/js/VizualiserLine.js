@@ -2,6 +2,7 @@ import * as PIXI from 'pixi.js'
 import * as PIXILayers from '@pixi/layers'
 import AudioAnalyser from './AudioAnalyser'
 import Vizualiser from './Vizualiser'
+import { autoDetectRenderer, Rectangle, RenderTexture } from 'pixi.js'
 
 export default class VizualiserLine extends Vizualiser {
 
@@ -10,29 +11,57 @@ export default class VizualiserLine extends Vizualiser {
     }
 
     initElements(){
-        
+        this.renderer = autoDetectRenderer()
+
+        //setup layer
+        this.layer = new PIXILayers.Layer()
+        this.stage.addChild(this.layer)
+
+        this.layer.useRenderTexture = true
+        this.layer.useDoubleBuffer = true
+
         this.minX = 0
         this.minY = 0
         this.maxX = window.innerWidth
-        this.maxY = window.innerHeight  
+        this.maxY = window.innerHeight
+        
+        this.filter = new PIXI.Filter()
 
-        //create graphics for spectrograph
         this.graphics = new PIXI.Graphics()
-        this.stage.addChild(this.graphics)
+        
 
         this.graphics.position.set(0, window.innerHeight/2)
 
         this.drawGraph()  
+        
+        //draw output sprite
+        this.sprite = new PIXI.Sprite(this.layer.getRenderTexture())
+        this.feedbackSprite = new PIXI.Sprite(this.layer.getRenderTexture())
+        this.layer.addChild(this.feedbackSprite)
+        
+        this.graphics.zOrder = 1
+        this.feedbackSprite.zOrder = 0
+
+        this.stage.addChild(this.sprite)
+        this.layer.addChild(this.graphics)
+        
+        fetch('../shaders/shader.glsl')
+            .then((res)=>res.text())
+            .then((res)=>{this.loadShader(res)})
     }
 
     update(dt){
+        //get previous render texture
         this.drawGraph()
+
+        var f = this.layer.getRenderTexture()
+        this.filter.uniforms.uPrevFrame = f._frame
     }
 
     drawGraph(){
         if(this.audioAnalyser.analyser && this.audioAnalyser.freqArray){
             this.graphics.clear()
-            this.graphics.lineStyle(2, 0xFFFFFF)
+            this.graphics.lineStyle(5, 0xFFFFFF)
 
             var x = 0
             var y = this.audioAnalyser.freqArray[0] * this.maxY
@@ -46,5 +75,11 @@ export default class VizualiserLine extends Vizualiser {
                 this.graphics.lineTo(x,y)
             }
         }
+    }
+
+    loadShader(data){
+        var f = this.layer.getRenderTexture()
+        this.filter = new PIXI.Filter(null,data,{fDelta: 1.0, uPrevFrame:f._frame})
+        this.feedbackSprite.filters = [this.filter]
     }
 }

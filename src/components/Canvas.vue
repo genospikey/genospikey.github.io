@@ -43,8 +43,8 @@ function startViz(vizualiserClass){
 }
 
 function tick(delta){
-    props.audioAnalyser.update()
-    vizualiser.value.update()   
+    props.audioAnalyser.update(delta)
+    vizualiser.value.update(delta)   
 }
 
 function nextViz(vizName){
