@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js'
 import * as PIXILayers from '@pixi/layers'
+import * as PIXIUI from '@pixi/ui'
 import AudioAnalyser from './AudioAnalyser'
 import Vizualiser from './Vizualiser'
 import { autoDetectRenderer, Rectangle, RenderTexture } from 'pixi.js'
@@ -44,7 +45,7 @@ export default class VizualiserLine extends Vizualiser {
 
         this.stage.addChild(this.sprite)
         this.layer.addChild(this.graphics)
-        
+    
         fetch('../shaders/shader.glsl')
             .then((res)=>res.text())
             .then((res)=>{this.loadShader(res)})
@@ -79,7 +80,51 @@ export default class VizualiserLine extends Vizualiser {
 
     loadShader(data){
         var f = this.layer.getRenderTexture()
-        this.filter = new PIXI.Filter(null,data,{fDelta: 1.0, uPrevFrame:f._frame})
+        this.filter = new PIXI.Filter(null,data,{fDelta: 1.0, uPrevFrame:f._frame, fConvolutionFactor:0.01})
         this.feedbackSprite.filters = [this.filter]
+
+        //create debug ui
+        this.createDebugUI()
+    }
+    
+    createDebugUI(){
+        var style = new PIXI.TextStyle({
+            fontFamily:'Silkscreen',
+            fontSize:14,
+            fill:0xffff00,
+            align: 'right',
+        })
+
+        var sliderList = []
+        sliderList[0] = {
+            name:'fConvolutionFactor', 
+            min:0.0, 
+            max:0.01,
+            f:(value)=>{this.filter.uniforms.fConvolutionFactor = value; this.sliders[0].text.text = value},
+        }
+
+        this.sliders = []
+        for(let i=0;i<sliderList.length;i++){
+            var e = sliderList[i]
+            var slider = new PIXIUI.Slider({
+                bg: 'sliderbg.png',
+                fill: 'sliderfill.png',
+                slider: 'slider.png',
+                min: e.min, 
+                max: e.max,
+                value: e.min,
+            })
+            this.stage.addChild(slider)
+            slider.position.set(50,125 + i*50)
+            slider.onUpdate.connect(e.f)
+
+            this.sliders[i] = slider
+            
+            var t = new PIXI.Text(e.min, style)
+            this.stage.addChild(t)
+            t.position.set(325, 125 + i*50)
+            
+            this.sliders[i].text = t
+        }
     }
 }
