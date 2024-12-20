@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js'
 import * as PIXILayers from '@pixi/layers'
+import * as PIXIUI from '@pixi/ui'
 import AudioAnalyser from './AudioAnalyser'
 
 export default class Vizualiser{

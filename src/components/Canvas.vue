@@ -1,3 +1,11 @@
+// This Vue component sets up a PIXI.js application to visualize audio data.
+// - It initializes the PIXI application and attaches it to a canvas element.
+// - The component handles window resizing to adjust the canvas size and aspect ratio.
+// - It includes functionality to switch between different visualizers based on the VizualiserList.
+// - The `tick` function updates the audio analyser and the visualizer each frame.
+// - `onMounted` sets up the PIXI app and starts the first visualizer.
+// - `nextViz` switches to the next visualizer in the list.
+
 <template>
     <div ref="canvas" class="absolute top-0 bottom-0 left-0 right-0" style='z-index: 0;'></div>
 </template>
