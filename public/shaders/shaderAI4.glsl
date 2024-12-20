@@ -1,13 +1,13 @@
 varying vec2 vTextureCoord;
 uniform sampler2D uSampler;
-uniform float time;
+uniform float fTime;
 uniform sampler2D uPrevFrame;
 uniform float fConvolutionFactor;
 
 void main(void)
 {
     // Create wave effect
-    float wave = sin(vTextureCoord.y * 10.0 + time) * 0.05;
+    float wave = sin(vTextureCoord.y * 10.0 + fTime) * 0.05;
     vec2 uv = vec2(vTextureCoord.x + wave, vTextureCoord.y);
 
     // Sample the texture

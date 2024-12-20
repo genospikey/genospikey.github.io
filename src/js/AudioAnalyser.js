@@ -43,23 +43,32 @@ export default class AudioAnalyser extends EventEmitter {
         this.status = 'waiting for input'
     }
 
-    start(audioSource){
+    start(audioSource, mic = false){
         this.status = 'running'
         
         //setup audio context
         this.audioCtx =  new window.AudioContext
         
         //create nodes
-        if(!this.source)
-            this.source = this.audioCtx.createMediaElementSource(audioSource)
+        if (audioSource instanceof HTMLMediaElement) {
+            this.source = this.audioCtx.createMediaElementSource(audioSource);
+        } else if (audioSource instanceof MediaStream) {
+            this.source = this.audioCtx.createMediaStreamSource(audioSource);
+        } else {
+            console.log(audioSource)
+            throw new Error('Unsupported input type for AudioAnalyser');
+        }
+
+        console.log(audioSource)
         this.gainNode = this.audioCtx.createGain()
         this.analyser = this.audioCtx.createAnalyser()
-        
-        //connect nodes
         this.source.connect(this.gainNode)
         this.gainNode.connect(this.analyser)
-        this.gainNode.connect(this.audioCtx.destination)
         
+        //connect nodes
+        if(!mic){
+            this.gainNode.connect(this.audioCtx.destination)
+        }
 
         //setup nodes
         this.analyser.fftSize = this.fftSize

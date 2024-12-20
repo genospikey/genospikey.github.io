@@ -24,6 +24,7 @@ const vizualiser = ref()
 const appticker = ref()
 const vizList = ref(new VizualiserList())
 const currViz = ref(0)
+const ticking = ref(true)
 
 function onResize(e) {
     var w = window.innerWidth
@@ -39,24 +40,26 @@ function onResize(e) {
 }
 
 function startViz(vizualiserClass){
-    //clear out existing tickers and destroy current viz
-    app.value.ticker.remove((delta)=>{tick(delta)})
-    if(vizualiser.value) vizualiser.value.destroy()
-
     //setup new viz
     vizualiser.value = new vizualiserClass(app.value, props.audioAnalyser)
     app.value.stage = vizualiser.value.stage
-
-    app.value.ticker.add((delta)=>{tick(delta)})
+    
+    ticking.value = true
 }
 
 function tick(delta){
-    props.audioAnalyser.update(delta)
-    vizualiser.value.update(delta)   
+    if(ticking.value){
+        props.audioAnalyser.update(delta)
+        vizualiser.value.update(delta)   
+    }    
 }
 
 function nextViz(vizName){
+    ticking.value = false
+    if(vizualiser.value) vizualiser.value.destroy()
+
     console.log(vizList.value.list.length)
+
     currViz.value = (currViz.value + 1) % vizList.value.list.length
     startViz(vizList.value.list[currViz.value].class)
 
@@ -80,6 +83,7 @@ onMounted(() => {
     canvas.value.appendChild(app.value.view)
 
     startViz(vizList.value.list[currViz.value].class)
+    app.value.ticker.add((delta)=>{tick(delta)})
 })
 
 const props = defineProps({

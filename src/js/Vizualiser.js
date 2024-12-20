@@ -2,6 +2,7 @@ import * as PIXI from 'pixi.js'
 import * as PIXILayers from '@pixi/layers'
 import * as PIXIUI from '@pixi/ui'
 import AudioAnalyser from './AudioAnalyser'
+import { autoDetectRenderer, Rectangle, RenderTexture } from 'pixi.js'
 
 export default class Vizualiser{
     
@@ -31,6 +32,10 @@ export default class Vizualiser{
     }
 
     destroy(){
+        // Remove event listeners from audioAnalyser 
+        for (let i = 0; i < this.audioAnalyser.dataArray.length; i++) { 
+            this.audioAnalyser.off('beat' + i, () => this.onBeat(i));
+        }
     }
 
     resize(){

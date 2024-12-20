@@ -46,7 +46,7 @@ export default class VizualiserLine extends Vizualiser {
         this.stage.addChild(this.sprite)
         this.layer.addChild(this.graphics)
     
-        fetch('../shaders/shader.glsl')
+        fetch('../shaders/shaderAI7.glsl')
             .then((res)=>res.text())
             .then((res)=>{this.loadShader(res)})
     }
@@ -54,6 +54,9 @@ export default class VizualiserLine extends Vizualiser {
     update(dt){
         //get previous render texture
         this.drawGraph()
+
+        var angle = Date.now().toFixed(2)/1000.0 % (Math.PI * 2.0) ; // Convert to seconds
+        this.filter.uniforms.fTime = angle;
 
         var f = this.layer.getRenderTexture()
         this.filter.uniforms.uPrevFrame = f._frame
@@ -85,6 +88,35 @@ export default class VizualiserLine extends Vizualiser {
 
         //create debug ui
         this.createDebugUI()
+    }
+
+    destroy() {
+        // Remove graphics and sprites from the stage
+        this.stage.removeChild(this.sprite);
+        this.sprite.destroy({ children: true, texture: true, baseTexture: true });
+    
+        this.stage.removeChild(this.feedbackSprite);
+        this.feedbackSprite.destroy({ children: true, texture: true, baseTexture: true });
+    
+        this.layer.removeChild(this.graphics);
+        this.graphics.destroy({ children: true, texture: true, baseTexture: true });
+    
+        // Remove layer from the stage
+        this.stage.removeChild(this.layer);
+        this.layer.destroy({ children: true, texture: true, baseTexture: true });
+    
+        // Remove sliders and text from the stage
+        if (this.sliders) {
+            for (let slider of this.sliders) {
+                this.stage.removeChild(slider);
+                slider.destroy();
+                this.stage.removeChild(slider.text);
+                slider.text.destroy();
+            }
+        }
+    
+        // Call parent destroy if necessary
+        super.destroy();
     }
     
     createDebugUI(){

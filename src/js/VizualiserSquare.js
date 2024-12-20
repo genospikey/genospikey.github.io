@@ -46,7 +46,7 @@ export default class VizualiserSquare extends Vizualiser{
     }
 
     destroy(){
-
+        super.destroy()
     }
 
     resize(){

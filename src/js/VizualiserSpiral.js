@@ -51,7 +51,7 @@ export default class VizualiserSpiral extends Vizualiser {
         this.stage.addChild(this.sprite)
         this.layer.addChild(this.graphics)
 
-        fetch('../shaders/shaderAI3.glsl')
+        fetch('../shaders/shaderAI6.glsl')
             .then((res) => res.text())
             .then((res) => { this.loadShader(res); });
     }
@@ -60,9 +60,8 @@ export default class VizualiserSpiral extends Vizualiser {
         if (!this.filter) return;
     
         // Update time uniform
-        var angle = Date.now().toFixed(2)/10.0 % (Math.PI * 2.0) ; // Convert to seconds
+        var angle = Date.now().toFixed(2)/1000.0 % (Math.PI * 2.0) ; // Convert to seconds
         this.filter.uniforms.fTime = angle;
-        console.log(this.filter.uniforms.fTime);
         // Existing drawing logic
         this.drawSpiral();
     
@@ -77,7 +76,7 @@ export default class VizualiserSpiral extends Vizualiser {
     
 
     drawSpiral() {
-        if (this.audioAnalyser.analyser) {
+        if (this.graphics && this.audioAnalyser.analyser) {
             const dataArray = new Float32Array(this.audioAnalyser.analyser.frequencyBinCount);
             this.audioAnalyser.analyser.getFloatFrequencyData(dataArray);
 

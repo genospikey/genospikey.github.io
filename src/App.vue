@@ -14,13 +14,13 @@ const debug_count = ref(0)
 const updateRate = 16
 const canvas = ref()
 
-function clicked(button){
-  console.log('i got clicked',button,audioPlayer.value)
+async function clicked(button) {
+  console.log('i got clicked', button, audioPlayer.value)
 
-  switch(button){
+  switch (button) {
     case 'play':
       audioPlayer.value.play()
-      if(audioAnalyser.value.status != 'running')
+      if (audioAnalyser.value.status != 'running')
         audioAnalyser.value.start(audioPlayer.value)
       break
     case 'stop':
@@ -35,23 +35,37 @@ function clicked(button){
     case 'nextViz':
       canvas.value.nextViz()
       break
+    case 'mic':
+      if (navigator.mediaDevices.getUserMedia) {
+        try {
+          const source = await navigator.mediaDevices.getUserMedia({ audio: true })
+          audioAnalyser.value.start(source)
+        } catch (err) {
+          console.error('Error accessing the microphone:', err)
+        }
+      } else {
+        console.error('getUserMedia not supported on your browser!')
+      }
+      break
   }
 }
-
 </script>
+
 
 <template>
   <audio ref="audioPlayer" style="display:none" crossorigin="anonymous">
     <source src="https://ice6.somafm.com/groovesalad-256-mp3" type="audio/mpeg">
   </audio>
   <div class="absolute left-12 top-12 z-10 flex flex-row gap-3">
-    <Button :class="buttonStyle" button-image="play" @click="clicked('play')"/>
-    <Button :class="buttonStyle" button-image="stop" @click="clicked('stop')"/>
-    <Button :class="buttonStyle" button-image="voldown" @click="clicked('voldown')"/>
-    <Button :class="buttonStyle" button-image="volup" @click="clicked('volup')"/>
-    <Button :class="buttonStyle" button-image="open" @click="clicked('open')"/>
-    <Button :class="buttonStyle" button-image="resume" @click="clicked('resume')"/>
-    <Button :class="buttonStyle" button-image="nextViz" @click="clicked('nextViz')"/>
+    <Button :class="buttonStyle" button-image="play" @click="clicked('play')" />
+    <Button :class="buttonStyle" button-image="stop" @click="clicked('stop')" />
+    <Button :class="buttonStyle" button-image="voldown" @click="clicked('voldown')" />
+    <Button :class="buttonStyle" button-image="volup" @click="clicked('volup')" />
+    <Button :class="buttonStyle" button-image="open" @click="clicked('open')" />
+    <Button :class="buttonStyle" button-image="resume" @click="clicked('resume')" />
+    <Button :class="buttonStyle" button-image="nextViz" @click="clicked('nextViz')" />
+    <Button :class="buttonStyle" button-image="mic" @click="clicked('mic')" /> <!-- New button for mic -->
   </div>
   <Canvas :audioAnalyser="audioAnalyser" ref="canvas" />
 </template>
+
