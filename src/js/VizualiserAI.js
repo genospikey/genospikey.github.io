@@ -75,7 +75,6 @@ export default class VizualiserAI extends Vizualiser {
     }
 
     onBeat(index) {
-        console.log("onbeat")
         this.cubes[index].speed *= 1.5;
         this.cubes[index].rotationSpeed *= 1.5;
     }

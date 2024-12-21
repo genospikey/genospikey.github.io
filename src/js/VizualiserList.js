@@ -6,6 +6,7 @@ import VizualiserPolar from './VizualiserPolar';
 import VizualiserSpiral from './VizualiserSpiral';
 import VizualiserAI from './VizualiserAI';
 import VizualiserAI2 from './VizualiserAI2';
+import VizualiserLeftWaveform from './VizualiserLeftWaveform'; // Import the new class
 
 export default class VizualiserList {
     
@@ -18,5 +19,6 @@ export default class VizualiserList {
         this.list[4] = {class: VizualiserSpiral, name: 'Spiral', description: 'A dynamic spiral visualizer that reacts to frequencies'};
         this.list[5] = {class: VizualiserAI, name: 'AI', description: 'AI Generated Nonsense'};
         this.list[6] = {class: VizualiserAI2, name: 'Balls', description: 'AI Generated Nonsense 2'};
+        this.list[7] = {class: VizualiserLeftWaveform, name: 'Left Waveform', description: 'A vertical waveform on the left side of the screen'};
     }
 }
