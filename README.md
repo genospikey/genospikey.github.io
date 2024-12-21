@@ -8,7 +8,7 @@ Install NPM and run the following command in the installation directory:
 npm install genospikey.github.io --save
 ```
 ## Usage example
-Create stunning visual effects for your music, ideal for concerts or personal use. The visualizers react in real-time to the audio input, providing a dynamic and immersive experience. (WOW GOOD JOB COPILOT LOL)
+Create stunning visual effects for your music, ideal for concerts or personal use. The visualizers react in real-time to the audio input, providing a dynamic and immersive experience. (WOW GOOD JOB COPILOT LOLLOL)
 
 ## Step-by-Step Guide
 ### Create a New Class File:

@@ -43,10 +43,11 @@ export default class VizualiserShaderBase extends Vizualiser {
     }
 
     loadShader(data, uniforms = {}) {
+        var u = uniforms
         var f = this.layer.getRenderTexture();
-        uniforms.uPrevFrame = f;
-        
-        this.filter = new PIXI.Filter(null, data, uniforms);
+
+        this.filter = new PIXI.Filter(null, data, u);
+        this.filter.uniforms.uPrevFrame = f._frame;
         this.feedbackSprite.filters = [this.filter];
     }
 
