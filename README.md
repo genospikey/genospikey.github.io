@@ -8,7 +8,7 @@ Genospikey.github.io is a dynamic audio visualizer built using Vue.js and PIXI.j
 
 ## Installation
 
-OS X & Linux:
+Install NPM and run the following command in the installation directory:
 
 ```sh
 npm install genospikey.github.io --save
