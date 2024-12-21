@@ -82,12 +82,13 @@ export default class VizualiserLine extends Vizualiser {
     }
 
     loadShader(data){
-        var f = this.layer.getRenderTexture()
-        this.filter = new PIXI.Filter(null,data,{fDelta: 1.0, uPrevFrame:f._frame, fConvolutionFactor:0.01})
-        this.feedbackSprite.filters = [this.filter]
+        var f = this.layer.getRenderTexture();
+        var u = {fDelta: 1.0, uPrevFrame:f._frame, fConvolutionFactor:0.01};
+        this.filter = new PIXI.Filter(null,data,u);
+        this.feedbackSprite.filters = [this.filter];
 
         //create debug ui
-        this.createDebugUI()
+        this.createDebugUI();
     }
 
     destroy() {

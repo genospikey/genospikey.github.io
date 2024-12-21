@@ -8,8 +8,8 @@ export default class VizualiserLeftWaveform extends VizualiserShaderBase {
     }
 
     initElements() {
-        const shaderPath = '../shaders/shaderAIWater.glsl'; // Specify your shader path
-        const uniforms = { fTime: 0.0, fConvolutionFactor: 0.01 };
+        var shaderPath = '../shaders/shaderAIBoil.glsl'; // Specify your shader path
+        var uniforms = { fTime: 0.0, fConvolutionFactor: 0.01 };
         super.initElements();
         
         this.graphics = new PIXI.Graphics();
@@ -17,7 +17,7 @@ export default class VizualiserLeftWaveform extends VizualiserShaderBase {
         this.layer.addChild(this.graphics);
         this.drawGraph();
 
-        fetchAndLoadShader(shaderPath,uniforms);
+        this.fetchAndLoadShader(shaderPath,uniforms);
     }
 
     drawGraph() {
